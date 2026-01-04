@@ -1,0 +1,24 @@
+{
+  "name": "amant-backend",
+  "version": "1.0.0",
+  "description": "amant backend",
+  "homepage": "https://github.com/Ayushx13/amant-backend#readme",
+  "bugs": {
+    "url": "https://github.com/Ayushx13/amant-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ayushx13/amant-backend.git"
+  },
+  "license": "ISC",
+  "author": "Ayush Raj",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11"
+  }
+}
