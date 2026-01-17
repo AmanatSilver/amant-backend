@@ -1,7 +1,10 @@
 import express from 'express';
 import { adminLogin } from '../controllers/adminAuthController.js';
-import {verifyAdminToken} from '../middleware/authMiddleware.js';
-import { createProduct ,updateProduct , addToNewArrivals , deleteProduct} from '../controllers/productController.js';    
+import {verifyAdminToken} from '../middleware/adminAuth.js';
+import { createProduct ,updateProduct , addToNewArrivals , deleteProduct} from '../controllers/productController.js';
+import { createCollection, updateCollection, deleteCollection } from '../controllers/collectionController.js';
+import { getAllEnquiries, deleteEnquiry , getEnquiryById } from '../controllers/enquiryController.js';
+import { updateReview, deleteReview } from '../controllers/reviewController.js';    
 
 const router = express.Router();
 
@@ -45,5 +48,51 @@ router.patch('/products/add-to-new-arrivals/:id', addToNewArrivals);
 // @desc    Delete a product
 // @access  Private/Admin
 router.delete('/products/:id', deleteProduct);
+
+//--------------------------------------------- Collection Routes ---------------------------------------------//
+
+// @route   POST /realSilver/collections
+// @desc    Create a new collection
+// @access  Private/Admin
+router.post('/collections', createCollection);
+
+// @route   PATCH /realSilver/collections/:id
+// @desc    Update a collection
+// @access  Private/Admin
+router.patch('/collections/:id', updateCollection);
+
+// @route   DELETE /realSilver/collections/:id
+// @desc    Delete a collection
+// @access  Private/Admin
+router.delete('/collections/:id', deleteCollection);
+
+//--------------------------------------------- Enquiry Routes ---------------------------------------------//
+
+// @route   GET /realSilver/enquiries
+// @desc    Get all enquiries
+// @access  Private/Admin
+router.get('/enquiries', getAllEnquiries);
+
+// @route   DELETE /realSilver/enquiries/:id
+// @desc    Delete an enquiry
+// @access  Private/Admin
+router.delete('/enquiries/:id', deleteEnquiry);
+
+// @route   GET /realSilver/enquiries/:id
+// @desc    Get enquiry by ID
+// @access  Private/Admin
+router.get('/enquiries/:id', getEnquiryById);
+
+//--------------------------------------------- Review Routes ---------------------------------------------//
+
+// @route   PATCH /realSilver/reviews/:id
+// @desc    Update a review
+// @access  Private/Admin
+router.patch('/reviews/:id', updateReview);
+
+// @route   DELETE /realSilver/reviews/:id
+// @desc    Delete a review
+// @access  Private/Admin
+router.delete('/reviews/:id', deleteReview);
 
 export default router;

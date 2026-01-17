@@ -74,6 +74,7 @@ export const createReview = catchAsync(async (req, res, next) => {
     });
 });
 
+//------------------------------------------- Admin controllers ---------------------------------------------//
 
 // @route   PATCH /realSilver/reviews/:id
 // @desc    Update a review
