@@ -1,52 +1,42 @@
 import jwt from 'jsonwebtoken';
 import AppError from '../utils/appError.js';
+import catchAsync from '../utils/catchAsync.js';
 
 // Middleware to verify admin token (after login)
-export const verifyAdminToken = (req, res, next) => {
-    try {
-        // Get token from header
-        let token;
-        
-        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-            token = req.headers.authorization.split(' ')[1];
-        }
+export const verifyAdminToken = catchAsync(async (req, res, next) => {
+    let token;
 
-        if (!token) {
-            return next(new AppError('Admin authentication required', 401));
-        }
-
-        // Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        if (!decoded.isAdmin || decoded.type !== 'admin') {
-            return next(new AppError('Access denied. Admin privileges required.', 403));
-        }
-
-        req.isAdmin = true;
-        next();
-    } catch (error) {
-        if (error.name === 'JsonWebTokenError') {
-            return next(new AppError('Invalid admin token', 401));
-        }
-        if (error.name === 'TokenExpiredError') {
-            return next(new AppError('Admin token has expired. Please login again.', 401));
-        }
-        return next(error);
+    // 1️⃣ Get token from header OR cookie
+    if (req.headers.authorization?.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies?.token) {
+        token = req.cookies.token;
     }
-};
 
-// // Original middleware for direct admin key verification (kept for backward compatibility)
-// export const verifyAdminKey = (req, res, next) => {
-//     const adminKey = req.headers['x-admin-key'] || req.query.adminKey || req.body.adminKey;
+    if (!token) {
+        return next(new AppError('Admin authentication required', 401));
+    }
 
-//     if (!adminKey) {
-//         return next(new AppError('Admin key is required', 401));
-//     }
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return next(new AppError('Invalid or expired token', 401));
+    }
 
-//     if (adminKey !== process.env.ADMIN_SECRET_KEY) {
-//         return next(new AppError('Chala ja bsdk yaha se', 403));
-//     }
+    // 2️⃣ Admin check
+    if (!decoded.isAdmin || decoded.type !== 'admin') {
+        return next(
+            new AppError('Access denied. Admin privileges required.', 403)
+        );
+    }
 
-//     req.isAdmin = true;
-//     next();
-// };
+    // 3️⃣ Attach user info
+    req.user = decoded;
+    req.isAdmin = true;
+
+    next();
+});
+
+
+
