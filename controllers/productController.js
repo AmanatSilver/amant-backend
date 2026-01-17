@@ -158,6 +158,30 @@ export const updateProduct = catchAsync(async (req, res, next) => {
     });
 });
 
+//@route  PATCH /realSilver/products/add-to-new-arrivals/:id
+//@desc   Add product to new arrivals
+//@access Private/Admin 
+export const addToNewArrivals = catchAsync(async (req, res, next) => {
+    const { id } = req.params;
+
+    const product = await Product.findByIdAndUpdate(id, { isNewArrival: true }, {
+        new: true,
+        runValidators: true
+    });
+
+    if (!product) {
+        return next(new AppError('Product not found', 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        data: {
+            product
+        }
+    });
+});
+
+
 
 // @route   DELETE /realSilver/products/:id
 // @desc    Delete a product
