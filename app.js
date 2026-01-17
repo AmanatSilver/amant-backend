@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import adminRoutes from "./routers/adminRoutes.js";
+import productRoutes from "./routers/productRoutes.js";
 import globalErrorHandler from './utils/globalErrorHandler.js';
 import AppError from './utils/appError.js';
 
@@ -20,6 +21,8 @@ app.get('/', (req, res) => {
 //admin routes
 app.use('/api/v1/amanat/realSilver', adminRoutes);
 
+//product routes
+app.use('/api/v1/amanat/products', productRoutes);
 
 // 404 handler
 app.all('/{*any}', (req, res, next) => {

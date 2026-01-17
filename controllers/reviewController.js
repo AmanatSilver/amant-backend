@@ -75,7 +75,7 @@ export const createReview = catchAsync(async (req, res, next) => {
 });
 
 
-// @route   PUT /realSilver/reviews/:id
+// @route   PATCH /realSilver/reviews/:id
 // @desc    Update a review
 // @access  Private/Admin
 export const updateReview = catchAsync(async (req, res, next) => {

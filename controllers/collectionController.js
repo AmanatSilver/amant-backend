@@ -96,7 +96,7 @@ export const createCollection = catchAsync(async (req, res, next) => {
 });
 
 
-// @route   PUT /realSilver/collections/:id
+// @route   PATCH /realSilver/collections/:id
 // @desc    Update a collection
 // @access  Private/Admin
 export const updateCollection = catchAsync(async (req, res, next) => {

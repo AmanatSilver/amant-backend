@@ -1,5 +1,7 @@
 import express from 'express';
 import { adminLogin } from '../controllers/adminAuthController.js';
+import {verifyAdminToken} from '../middleware/authMiddleware.js';
+import { createProduct ,updateProduct , addToNewArrivals , deleteProduct} from '../controllers/productController.js';    
 
 const router = express.Router();
 
@@ -19,5 +21,29 @@ const router = express.Router();
 // @desc    Verify admin key and return admin token
 // @access  Public
 router.post('/login', adminLogin);
+
+router.use(verifyAdminToken);
+
+//--------------------------------------------- Product Routes ---------------------------------------------//
+
+// @route   POST /realSilver/products
+// @desc    Create a new product
+// @access  Private/Admin
+router.post('/products', createProduct);    
+
+// @route   PATCH /realSilver/products/:id
+// @desc    Update a product
+// @access  Private/Admin
+router.patch('/products/:id', updateProduct);
+
+// @route   PATCH /realSilver/products/add-to-new-arrivals/:id
+// @desc    Add product to new arrivals
+// @access  Private/Admin
+router.patch('/products/add-to-new-arrivals/:id', addToNewArrivals);
+
+// @route   DELETE /realSilver/products/:id
+// @desc    Delete a product
+// @access  Private/Admin
+router.delete('/products/:id', deleteProduct);
 
 export default router;

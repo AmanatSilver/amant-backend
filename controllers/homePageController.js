@@ -44,7 +44,7 @@ export const createHomepageContent = catchAsync(async (req, res, next) => {
 });
 
 
-// @route   PUT /realSilver/homepage/:id
+// @route   PATCH /realSilver/homepage/:id
 // @desc    Update homepage content
 // @access  Private/Admin
 export const updateHomepageContent = catchAsync(async (req, res, next) => {
@@ -68,7 +68,7 @@ export const updateHomepageContent = catchAsync(async (req, res, next) => {
 });
 
 
-// @route   PUT /realSilver/homepage
+// @route   PATCH /realSilver/homepage
 // @desc    Update homepage content (without ID - finds the first one)
 // @access  Private/Admin
 export const updateHomepage = catchAsync(async (req, res, next) => {

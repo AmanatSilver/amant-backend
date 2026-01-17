@@ -135,7 +135,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
 });
 
 
-// @route   PUT /realSilver/products/:id
+// @route   PATCH /realSilver/products/:id
 // @desc    Update a product
 // @access  Private/Admin
 export const updateProduct = catchAsync(async (req, res, next) => {
