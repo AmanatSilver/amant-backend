@@ -1,10 +1,11 @@
 import express from 'express';
 import { adminLogin } from '../controllers/adminAuthController.js';
-import {verifyAdminToken} from '../middleware/adminAuth.js';
-import { createProduct ,updateProduct , addToNewArrivals , deleteProduct} from '../controllers/productController.js';
+import { verifyAdminToken } from '../middleware/adminAuth.js';
+import { createProduct, updateProduct, addToNewArrivals, deleteProduct } from '../controllers/productController.js';
 import { createCollection, updateCollection, deleteCollection } from '../controllers/collectionController.js';
-import { getAllEnquiries, deleteEnquiry , getEnquiryById } from '../controllers/enquiryController.js';
-import { updateReview, deleteReview } from '../controllers/reviewController.js';    
+import { getAllEnquiries, deleteEnquiry, getEnquiryById } from '../controllers/enquiryController.js';
+import { updateReview, deleteReview } from '../controllers/reviewController.js';
+import { uploadProductImages } from "./../utils/cloudinaryConfig.js";
 
 const router = express.Router();
 
@@ -19,33 +20,33 @@ const router = express.Router();
  * Token is valid for 1 hour
 */
 
-
 // @route   POST /realSilver/login
 // @desc    Verify admin key and return admin token
 // @access  Public
 router.post('/login', adminLogin);
 
+// Apply admin authentication to all routes below
 router.use(verifyAdminToken);
 
 //--------------------------------------------- Product Routes ---------------------------------------------//
 
 // @route   POST /realSilver/products
-// @desc    Create a new product
+// @desc    Create a new product with images
 // @access  Private/Admin
-router.post('/products', createProduct);    
-
-// @route   PATCH /realSilver/products/:id
-// @desc    Update a product
-// @access  Private/Admin
-router.patch('/products/:id', updateProduct);
+router.post('/products', uploadProductImages, createProduct);
 
 // @route   PATCH /realSilver/products/add-to-new-arrivals/:id
 // @desc    Add product to new arrivals
 // @access  Private/Admin
 router.patch('/products/add-to-new-arrivals/:id', addToNewArrivals);
 
+// @route   PATCH /realSilver/products/:id
+// @desc    Update a product (with optional new images)
+// @access  Private/Admin
+router.patch('/products/:id', uploadProductImages, updateProduct);
+
 // @route   DELETE /realSilver/products/:id
-// @desc    Delete a product
+// @desc    Delete a product and its images from Cloudinary
 // @access  Private/Admin
 router.delete('/products/:id', deleteProduct);
 
@@ -73,15 +74,15 @@ router.delete('/collections/:id', deleteCollection);
 // @access  Private/Admin
 router.get('/enquiries', getAllEnquiries);
 
-// @route   DELETE /realSilver/enquiries/:id
-// @desc    Delete an enquiry
-// @access  Private/Admin
-router.delete('/enquiries/:id', deleteEnquiry);
-
 // @route   GET /realSilver/enquiries/:id
 // @desc    Get enquiry by ID
 // @access  Private/Admin
 router.get('/enquiries/:id', getEnquiryById);
+
+// @route   DELETE /realSilver/enquiries/:id
+// @desc    Delete an enquiry
+// @access  Private/Admin
+router.delete('/enquiries/:id', deleteEnquiry);
 
 //--------------------------------------------- Review Routes ---------------------------------------------//
 

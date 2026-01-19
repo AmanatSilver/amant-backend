@@ -1,29 +1,36 @@
 import express from 'express';
-import {getAllProducts, getProductBySlug, getProductById , getProductsByCollection ,getFeaturedProducts ,getNewArrivals} from '../controllers/productController.js';
+import {
+    getAllProducts,
+    getProductBySlug,
+    getProductById,
+    getProductsByCollection,
+    getFeaturedProducts,
+    getNewArrivals
+} from '../controllers/productController.js';
 
 const router = express.Router();
 
-//--------------------------------------------- Product Routes ---------------------------------------------//      
+//--------------------------------------------- Public Product Routes ---------------------------------------------//
 
 // @route   GET /realSilver/products
 // @desc    Get all products
 // @access  Public
-router.get('/', getAllProducts);    
-
-// @route   GET /realSilver/products/collection/:collectionIdSlug
-// @desc    Get products by collection slug
-// @access  Public
-router.get('/collection/:collectionSlug', getProductsByCollection);
+router.get('/', getAllProducts);
 
 // @route   GET /realSilver/products/featured
 // @desc    Get featured products
 // @access  Public
-router.get('/featured', getFeaturedProducts); 
+router.get('/featured', getFeaturedProducts);
 
 // @route   GET /realSilver/products/new-arrivals
 // @desc    Get new arrivals products
 // @access  Public
 router.get('/new-arrivals', getNewArrivals);
+
+// @route   GET /realSilver/products/collection/:collectionSlug
+// @desc    Get products by collection slug
+// @access  Public
+router.get('/collection/:collectionSlug', getProductsByCollection);
 
 // @route   GET /realSilver/products/slug/:slug
 // @desc    Get product by slug

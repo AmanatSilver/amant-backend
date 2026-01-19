@@ -1,12 +1,13 @@
 import Product from "../models/product.js";
 import AppError from "../utils/appError.js";
 import catchAsync from "../utils/catchAsync.js";
+import { deleteMultipleImages } from "./../utils/cloudinaryConfig.js";
+
 
 // @route   GET /realSilver/products
 // @desc    Get all products
 // @access  Public
 export const getAllProducts = catchAsync(async (req, res, next) => {
-    
     const products = await Product.find();
 
     res.status(200).json({
@@ -16,7 +17,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
             products: products
         }
     });
-
 });
 
 
@@ -121,10 +121,24 @@ export const getNewArrivals = catchAsync(async (req, res, next) => {
 
 
 // @route   POST /realSilver/products
-// @desc    Create a new product
+// @desc    Create a new product with images
 // @access  Private/Admin
 export const createProduct = catchAsync(async (req, res, next) => {
-    const product = await Product.create(req.body);
+    // Check if images were uploaded
+    if (!req.files || req.files.length === 0) {
+        return next(new AppError('Please upload at least one product image', 400));
+    }
+
+    // Extract image URLs from uploaded files
+    const imageUrls = req.files.map(file => file.path);
+
+    // Create product with image URLs
+    const productData = {
+        ...req.body,
+        images: imageUrls
+    };
+
+    const product = await Product.create(productData);
 
     res.status(201).json({
         success: true,
@@ -141,7 +155,26 @@ export const createProduct = catchAsync(async (req, res, next) => {
 export const updateProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Product.findByIdAndUpdate(id, req.body, {
+    let updateData = { ...req.body };
+
+    // If new images are uploaded, handle old images
+    if (req.files && req.files.length > 0) {
+        const product = await Product.findById(id);
+
+        if (!product) {
+            return next(new AppError('Product not found', 404));
+        }
+
+        // Delete old images from Cloudinary
+        if (product.images && product.images.length > 0) {
+            await deleteMultipleImages(product.images);
+        }
+
+        // Add new image URLs
+        updateData.images = req.files.map(file => file.path);
+    }
+
+    const product = await Product.findByIdAndUpdate(id, updateData, {
         new: true,
         runValidators: true
     });
@@ -158,9 +191,10 @@ export const updateProduct = catchAsync(async (req, res, next) => {
     });
 });
 
-//@route  PATCH /realSilver/products/add-to-new-arrivals/:id
-//@desc   Add product to new arrivals
-//@access Private/Admin 
+
+// @route   PATCH /realSilver/products/add-to-new-arrivals/:id
+// @desc    Add product to new arrivals
+// @access  Private/Admin
 export const addToNewArrivals = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
@@ -182,18 +216,24 @@ export const addToNewArrivals = catchAsync(async (req, res, next) => {
 });
 
 
-
 // @route   DELETE /realSilver/products/:id
 // @desc    Delete a product
 // @access  Private/Admin
 export const deleteProduct = catchAsync(async (req, res, next) => {
     const { id } = req.params;
 
-    const product = await Product.findByIdAndDelete(id);
+    const product = await Product.findById(id);
 
     if (!product) {
         return next(new AppError('Product not found', 404));
     }
+
+    // Delete images from Cloudinary
+    if (product.images && product.images.length > 0) {
+        await deleteMultipleImages(product.images);
+    }
+
+    await Product.findByIdAndDelete(id);
 
     res.status(204).json({
         success: true,
