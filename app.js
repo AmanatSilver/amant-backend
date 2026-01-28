@@ -17,7 +17,7 @@ app.use(cookieParser()); // Parse cookies
 // Print environment
 console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({'message': 'Hello from Amant backend'});
 });
 
