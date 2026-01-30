@@ -19,7 +19,8 @@ app.use(cookieParser()); // Parse cookies
 const allowedOrigins = [
     'http://localhost:5173',           // Local Vite
     'http://localhost:3000',           // Local React/Next
-    'https://amanatsilver.in'
+    'https://amanatsilver.in',
+    'https://www.amanatsilver.in'    
 ];
 
 // Add FRONTEND_URL if it exists and is different
