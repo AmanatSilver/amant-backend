@@ -15,13 +15,11 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser()); // Parse cookies
 
-
-
 // CORS configuration
 const allowedOrigins = [
     'http://localhost:5173',           // Local Vite
     'http://localhost:3000',           // Local React/Next
-    'https://amanatsilver.in'    
+    'https://amanatsilver.in'
 ];
 
 // Add FRONTEND_URL if it exists and is different
@@ -36,7 +34,7 @@ app.use(cors({
     origin: function (origin, callback) {
         // Allow requests with no origin (like mobile apps, Postman, or same-origin)
         if (!origin) return callback(null, true);
-        
+
         if (allowedOrigins.includes(origin)) {
             console.log('✅ CORS allowed for origin:', origin);
             callback(null, true);
@@ -52,15 +50,15 @@ app.use(cors({
 }));
 
 
-
-
-
-
 // Print environment
 console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
 
 app.get('/api', (req, res) => {
-  res.json({'message': 'Hello from Amant backend'});
+    res.json({
+        message: 'Hello from Amant backend',
+        status: 'running',
+        timestamp: new Date().toISOString()
+    });
 });
 
 //admin routes
@@ -80,7 +78,7 @@ app.use('/api/v1/amanat/enquiries', enquiryRoutes);
 
 // 404 handler
 app.all('/{*any}', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!!`, 404));
+    next(new AppError(`Can't find ${req.originalUrl} on this server!!`, 404));
 });
 
 
