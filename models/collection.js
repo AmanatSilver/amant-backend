@@ -35,15 +35,17 @@ const collectionSchema = new Schema(
 );
 
 // Generate slug from name
-collectionSchema.pre("save", function (next) {
-    if (!this.isModified("name")) return next();
+collectionSchema.pre("validate", function (next) {
+  // Only generate slug if name is new or modified
+  if (!this.isModified("name")) return next();
 
-    this.slug = slugify(this.name, {
-        lower: true,
-        strict: true,
-    });
+  this.slug = slugify(this.name, {
+    lower: true,   // convert to lowercase
+    strict: true,  // remove special characters
+    trim: true     // remove leading/trailing spaces
+  });
 
-    next();
+  next();
 });
 
 export default model("Collection", collectionSchema);

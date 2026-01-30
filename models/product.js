@@ -59,6 +59,7 @@ const productSchema = new Schema(
         category: {
             type: String,
             enum: ["jewelry", "broche"],
+            required:true,
         },
 
         price: {
@@ -77,15 +78,18 @@ const productSchema = new Schema(
     }
 );
 
-productSchema.pre("save", function (next) {
-    if (!this.isModified("name")) return next();
+// Generate slug from name
+productSchema.pre("validate", function (next) {
+  // Only generate slug if name is new or modified
+  if (!this.isModified("name")) return next();
 
-    this.slug = slugify(this.name, {
-        lower: true,
-        strict: true,
-    });
+  this.slug = slugify(this.name, {
+    lower: true,   // convert to lowercase
+    strict: true,  // remove special characters
+    trim: true     // remove leading/trailing spaces
+  });
 
-    next();
+  next();
 });
 
 export default model("Product", productSchema);
